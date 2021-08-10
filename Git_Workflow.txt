@@ -1,0 +1,133 @@
+Tal Goldfus
+109 Followers
+About
+Follow
+
+Sign in
+
+Get started
+
+
+Better understanding Git’s work flow in order to properly deal with merge conflicts — Part I
+Tal Goldfus
+Tal Goldfus
+
+Jun 17, 2016·7 min read
+
+
+As a novice programer I started by using git’s basics command without really understanding why and how they work , and my oh my did I try to avoid the scary “merge” command from the fear of meeting the terrifying “MERGE CONFLICT “ error.
+As in most things that scare us in life, this fear was originated from the unknown. Now that I have a better grasp of how Git basics work and are structured, the fear of accidentally running into the scary “Merge Conflict” is been reduced to a mere inconvenience.
+I will try to simplify for you, in this first blog piece, the basic structure of Git and how it works, following with the merge conflicts and what are the best practices to solve them.
+I hope that by the end of reading these two blog pieces you will understand Git and its merge conflicts in the same way you now do when trying to drive through a busy intersection.It will seam dangerous and confusing at first but when you understand in what directions the cars drive , where the traffic lights direct the cars and where the road crosses are located it will make you feel calmer when driving through that road next time around.
+
+Git’s Local Workflow simplified
+Your local repository consists of three “trees” maintained and tracked by git. the first one is your Working Directory which holds the actual files. the second one is the Index which acts as a staging area and finally the HEAD which points to the last commit you’ve made.
+
+This all becomes much more apparent when using a tool like GitX .
+Try and think of Git as a photographer taking a picture on his camera (Local Workspace) downloading it to his computer (HEAD) and when ready publishes on his website (Remote Repository). Before downloading the photos to the computer he checks to see if he has any new photos on his camera that are different then the ones on his computer (This would be the index / staging phase).
+Later when he wants to publish his work to his website or in return download the newest photos on his website that might have been uploaded by his co-worker he compares the photos that are in his computer (HEAD) and his website (Remote Repository) and only downloads or uploads the new photos . Of course that there is much more to that then this but for now it will help you understand the general idea behind the workflow.
+Whats the difference between push , commit & fetch ,merge
+Git commit basically “records changes to the local repository” while git push “updates remote refs along with associated objects”. So the first one is used in connection with your local repository, while the latter one is used to interact with a remote repository.
+git fetch really only downloads new data from a remote repository — but it doesn’t integrate any of this new data into your working files. git pull, in contrast, is used to to update your current HEAD branch with the latest changes from the remote server. This means that pull not only downloads new data; it also directly integrates it into your current working copy files.
+Here is a nice picture from Oliver Steele, that explains the git model and the commands:
+
+lets review again the basics steps of the git process now that we have the right idea of how the workflow works.
+Create a new repository
+To create a new git repository create a new local directory, cd into it (open it) and and type in terminal :
+$ git init
+Now that we initiated the repository we can create a working copy of a remote repository using :
+$ git clone username@host:/path/to/remote_repository
+Or if we want to clone a local repository we can do so by running the command :
+$ git clone /path/to//local/repository
+Add & Commit
+After we have our local repository setup its time for us to do some work. When that work is done we can propose changes by adding it to the Index using the following commands:
+#For a specific file : $ git add <filename>
+#Or to add all files and folders simply use : $ git add .
+Adding the files (proposing the changes) is the first step in the basic git workflow. To actually commit these changes use
+$ git commit -m “Commit message”
+Now the file is committed to the HEAD, but not in your remote repository yet.
+Lets see this in action at Explain-Git-With-D3
+Pushing changes
+Your changes are now in the HEAD of your local working copy. To send those changes to your remote repository, execute
+$ git push origin <master> 
+#Change master to whatever branch you want to push your changes to.
+If you have not cloned an existing repository and want to connect your repository to a remote server, you need to add it with
+$ git remote add origin <remote server>
+Now you are able to push your changes to the selected remote server. To check to what is the remote server your repo is connected to type
+$ git remote -v
+Branching
+Branches are used to develop features isolated from each other. The master branch is the “default” branch when you create a repository. Use other branches for development and merge them back to the master branch upon completion.If we were to go back to the photographer example think of each branch as new photographer joining the team.
+
+To create a new branch named “feature_x” and switch to it using
+$ git checkout -b feature_x
+To switch back to master type:
+$ git checkout master
+After your work is done and you want to delete the branch simply type:
+$ git branch -d feature_x
+A branch will not be available to others unless you push the branch to your remote repository using :
+$ git push origin <branch> 
+Update & Merge
+In order to update your local repository to the newest commit, type
+$ git pull
+in your working directory to fetch and merge all the remote changes.
+To merge another branch into your active branch (e.g. master), use
+$ git merge <branch>
+in both cases git tries to auto-merge changes. If the Master branch has changed since the new branch was created, then merging the new branch into the master branch will create a merge commit. This is a typical merge. If the Master branch has not diverged, instead of creating a new commit for the merge , git will just point master to the latest commit of the feature branch. This is called a “fast forward” merge . Ben Sandofsky’s visual diagram explains it perfectly :
+As with many things in life , this is not always possible and results in merge conflicts (hang on tight we will get to that in a moment ). In case of merge conflicts you will be responsible to merge those conflicts manually by editing the files shown by git. After changing and fixing the conflicts, you need to mark them as merged with
+#for a specific file : $ git add <filename> 
+#for all files and folders : $ git add .
+before merging changes and fixing the conflicts, you can also preview the differences between the branches by using :
+$ git diff <source_branch> <target_branch>
+*You can see all the git basics above in a very visual way by visiting Roger Dudlers blog post.
+Visualize your repository for better understanding
+To better understand your repository , type the following in your terminal once inside your git repository to open the built-in git GUI:
+$ gitk
+This will help you see all your commits ,changes,authors and visualize your git branches like so :
+
+Starting from the top left corner you will see the “Story line” of your repository , each dot representing a different commit along with its commit message. To the right of the “Story line” you will see the different users that are responsible for every dot(commit) along the “Story line” and the date and time of their commits.
+The long number right bellow the visual “Story Line” is the uniq ID of the selected commit/snapshot this will come handy later on when we will want to restore our files or update them to a specific point in our “Story line”.
+The bottom half of the screen will show you the file paths of the files that have been committed on the right and the actual content of these files to the right. This is very helpful to understand the changes that each file had . You can easily change between the files old version and new version as well as looking the differences between the two files in one place using Diff.
+In the next part of this piece we will talk in detail about how merge work’s why do merge conflicts happen and the best practices to solve and hopefully avoid them.
+Tal Goldfus
+Follow
+
+TAL GOLDFUS FOLLOWS
+Ev Williams
+Ev Williams
+M.G. Siegler
+M.G. Siegler
+Julie Zhuo
+Julie Zhuo
+WebdesignerDepot
+WebdesignerDepot
+Chris McCann
+Chris McCann
+See all (94)
+
+317
+
+
+4
+
+317
+
+
+4
+
+
+Git
+Github
+Gitk
+Merge Conflicts
+Git Basics
+More from Tal Goldfus
+Follow
+
+About
+
+Write
+
+Help
+
+Legal
+
